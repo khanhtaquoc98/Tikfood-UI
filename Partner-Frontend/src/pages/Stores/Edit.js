@@ -188,7 +188,7 @@ export default class EditStore extends React.Component{
             {/* start page title */}
 
             <LoadScript
-                                    googleMapsApiKey="AIzaSyCObmUDNsw4qthZE2wu2uCtNn776xy197U"
+                                    googleMapsApiKey=""
                                     libraries={["places"]}
                                     >
 
