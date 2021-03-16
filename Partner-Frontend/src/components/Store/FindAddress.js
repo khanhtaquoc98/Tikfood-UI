@@ -39,7 +39,7 @@ const containerStyle = {
     render() {
       return (
         <LoadScript
-          googleMapsApiKey="AIzaSyCObmUDNsw4qthZE2wu2uCtNn776xy197U"
+          googleMapsApiKey=""
           libraries={["places"]}
         >
             <Autocomplete
