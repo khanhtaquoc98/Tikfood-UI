@@ -5,7 +5,7 @@ const googlemapsLibraries = ['geometry']; // whatever google libraries you need
 export function withGoogleMaps(Component) {
   return forwardRef((props, ref) => {   
     const { isLoaded  } = useLoadScript({
-      googleMapsApiKey: 'AIzaSyCObmUDNsw4qthZE2wu2uCtNn776xy197U',
+      googleMapsApiKey: '',
       libraries: googlemapsLibraries,
     });
 
