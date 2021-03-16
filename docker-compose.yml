@@ -1,0 +1,107 @@
+version: '3'
+
+networks: 
+    food:
+
+services:
+  nginx:
+    build:
+      context: ./Nginx
+      dockerfile: nginx.dockerfile
+    restart: always
+    ports:
+      - 80:80
+      - 4000:4000
+      - 3333:3333
+      - 9400:9400
+    depends_on:
+      - python
+      - elasticsearch
+      - api
+      - client
+      - admin
+      - partner
+    networks:
+      - food
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    container_name: elasticsearch
+    environment:
+      - node.name=es01
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTIC_PASSWORD=FF76znncdxKwaKPKg216nmz7
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - "0.0.0.0:9200:9200"
+    networks: 
+      - food
+
+  python:
+    build: 
+      dockerfile: python.dockerfile
+      context: ./NLP
+    restart: always
+    ports: 
+        - 5000:5000
+    networks:
+      - food
+
+  api:
+    build: 
+      dockerfile: backend.dockerfile
+      context: ./Back-end
+    container_name: api
+    ports:
+      - 8080:8080
+    restart: always
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks: 
+      - food
+
+  client:
+    build:
+      context: ./Front-end
+      dockerfile: frontend.dockerfile
+    volumes:
+      - './Front-end:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    depends_on:
+      - api
+    networks: 
+      - food
+
+  admin:
+    build:
+      context: ./Admin-Frontend
+      dockerfile: admin.dockerfile
+    restart: always
+    depends_on:
+      - api
+    networks: 
+      - food
+
+  partner:
+    build:
+      context: ./Partner-Frontend
+      dockerfile: admin.dockerfile
+    restart: always
+    depends_on:
+      - api
+    networks: 
+      - food
+
+
+volumes:
+  esdata1:
+    driver: local
